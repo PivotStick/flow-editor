@@ -7,18 +7,13 @@
 	import { EditorView, basicSetup } from 'codemirror';
 	import { onMount } from 'svelte';
 	import NodeContainer from './NodeContainer.svelte';
+	import { slide } from 'svelte/transition';
+	import { expoOut } from 'svelte/easing';
 
 	/**
-	 * @type {import('@xyflow/svelte').NodeProps & { data: { code?: string; value?: any; }}}
+	 * @type {import('@xyflow/svelte').NodeProps & { data: any }}
 	 */
 	let { id, data, selected } = $props();
-
-	let code = $state(
-		data.code ??
-			`export default function(input) {
-    return input; // output;
-}`
-	);
 
 	/**
 	 * @type {HTMLElement=}
@@ -32,8 +27,15 @@
 
 	const { updateNodeData, getNode } = useSvelteFlow();
 
+	let title = $state(data.title ?? 'Code');
 	let error = $state();
-	let output = $state();
+	let value = $state();
+	let code = $state(
+		data.code ??
+			`export default function(input) {
+    return input; // output;
+}`
+	);
 
 	const connections = useHandleConnections({ nodeId: id, type: 'target' });
 
@@ -45,8 +47,11 @@
 	updateNodeData(
 		id,
 		{
+			get title() {
+				return title;
+			},
 			get value() {
-				return output;
+				return value;
 			},
 			get code() {
 				return code;
@@ -62,7 +67,7 @@
 			.then((module) => {
 				error = undefined;
 				if (typeof module.default === 'function') {
-					output = module.default(input);
+					value = module.default(input);
 				}
 			})
 			.catch((e) => (error = e));
@@ -89,8 +94,12 @@
 	});
 </script>
 
-<NodeContainer {selected} title="Code">
+<NodeContainer {selected} bind:title>
 	<div class="editor" class:error bind:this={container}></div>
+
+	{#if error}
+		<pre in:slide|local={{ easing: expoOut }} style="color: red; margin-top: .5rem;">{error}</pre>
+	{/if}
 
 	<Handle type="target" position={Position.Left} />
 	<Handle type="source" position={Position.Right} />
@@ -108,8 +117,11 @@
 		background-color: white;
 		border-radius: 0.5rem;
 
+		outline: 0px solid rgba(red, 0.5);
+		transition: 75ms linear outline-width;
+
 		&.error {
-			outline: 3px solid rgba(red, 0.5);
+			outline-width: 3px;
 		}
 	}
 </style>
