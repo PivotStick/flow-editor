@@ -98,7 +98,10 @@
 	<div class="editor" class:error bind:this={container}></div>
 
 	{#if error}
-		<pre in:slide|local={{ easing: expoOut }} style="color: red; margin-top: .5rem;">{error}</pre>
+		<pre
+			in:slide|local={{ easing: expoOut }}
+			class="--red"
+			style="color: rgb(var(--color-500)); margin-top: .5rem;">{error}</pre>
 	{/if}
 
 	<Handle type="target" position={Position.Left} />
@@ -117,11 +120,15 @@
 		background-color: white;
 		border-radius: 0.5rem;
 
-		outline: 0px solid rgba(red, 0.5);
+		outline: 0px solid rgba(var(--red-500) / 50%);
 		transition: 75ms linear outline-width;
 
 		&.error {
 			outline-width: 3px;
+		}
+
+		:global(.cm-editor) {
+			height: 100%;
 		}
 	}
 </style>

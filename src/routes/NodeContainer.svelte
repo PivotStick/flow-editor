@@ -10,18 +10,18 @@
 </script>
 
 <div class="node" class:selected>
-	<input type="text" bind:value={title} placeholder="Node's title" />
+	<input disabled type="text" bind:value={title} placeholder="Node's title" />
 	{@render children()}
 </div>
 
 <style lang="scss">
 	.node {
-		background-color: #eee;
+		background-color: rgba(var(--color-300));
 		border-radius: 0.5rem;
 		overflow: auto;
 
 		padding: 0.75rem;
-		outline: 0px solid rgba(black, 0.2);
+		outline: 0px solid rgba(var(--color-500) / 20%);
 		transition: 75ms linear outline-width;
 
 		display: grid;
@@ -35,6 +35,10 @@
 			background: none;
 			border: none;
 			font-size: inherit;
+
+			&:disabled {
+				pointer-events: none;
+			}
 		}
 	}
 </style>
