@@ -10,7 +10,7 @@
 </script>
 
 <div class="node" class:selected>
-	<input type="text" bind:value={title} />
+	<input type="text" bind:value={title} placeholder="Node's title" />
 	{@render children()}
 </div>
 
